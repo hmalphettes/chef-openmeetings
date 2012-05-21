@@ -1,0 +1,50 @@
+#!/bin/bash
+# For RedHat and cousins:
+# chkconfig: 2345 85 85
+# description: Red5 flash streaming server
+# processname: red5
+# Created By: Sohail Riaz (sohaileo@gmail.com)
+# Modified by Alvaro Bustos
+PROG=red5
+RED5_HOME=/usr/lib/red5
+DAEMON=$RED5_HOME/$PROG.sh
+PIDFILE=/var/run/$PROG.pid
+# Source function library
+# . /etc/rc.d/init.d/functions
+[ -r /etc/sysconfig/red5 ] && . /etc/sysconfig/red5
+RETVAL=0
+case "$1" in
+start)
+# echo -n $"Starting $PROG: "
+soffice "--accept=socket,host=127.0.0.1,port=8100,tcpNoDelay=1;urp;" --headless --nodefault --nofirststartwizard --nolockcheck --nologo --norestore & sleep 5
+cd $RED5_HOME
+start-stop-daemon --start -c nobody --chdir $RED5_HOME --pidfile $PIDFILE --exec $DAEMON #>/dev/null 2>/dev/null &
+RETVAL=$?
+if [ $RETVAL -eq 0 ]; then
+echo $! > $PIDFILE
+# touch /var/lock/subsys/$PROG
+fi
+# [ $RETVAL -eq 0 ] && success $"$PROG startup" || failure $"$PROG startup"
+echo
+;;
+stop)
+pkill soffice.bin
+start-stop-daemon --stop --quiet --pidfile $PIDFILE --name java
+rm -f $PIDFILE
+echo
+[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$PROG
+;;
+restart)
+$0 stop
+$0 start
+;;
+status)
+status $PROG -p $PIDFILE
+RETVAL=$?
+;;
+*)
+echo $"Usage: $0 {start|stop|restart|status}"
+RETVAL=1
+esac
+exit $RETVAL
+
