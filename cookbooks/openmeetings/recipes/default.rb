@@ -50,11 +50,25 @@ end
 
 end
 
+bash "swf tools from source" do
+  code <<-CODE
+curl -O http://www.swftools.org/swftools-2011-12-15-1229.tar.gz
+tar -zvxf swftools-2011-12-15-1229.tar.gz
+cd swftools-2011-12-15-1229
+./configure --prefix=/usr/local
+make
+make install
+CODE
+  only_if do
+    `pdf2swf -V | grep swftools | grep 2011-12-15-1229`.strip.empty?
+  end
+end
+
 bash "ffmpeg from source" do
   code <<-CODE
 rm -rf /tmp/ffmpeg_build
 mkdir -p /tmp/ffmpeg_build
-wget http://ffmpeg.org/releases/ffmpeg-0.9.1.tar.gz
+curl -O http://ffmpeg.org/releases/ffmpeg-0.9.1.tar.gz
 tar zxf ffmpeg-0.9.1.tar.gz
 cd ffmpeg-0.9.1
 ./configure --enable-libmp3lame --enable-libxvid --enable-libvorbis --enable-libgsm --enable-libfaac --enable-gpl --enable-nonfree
