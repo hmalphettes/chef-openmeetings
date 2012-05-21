@@ -1,0 +1,11 @@
+{
+  "name": "openmeetings-app",
+  "default_attributes": {},
+  "override_attributes": {},
+  "json_class": "Chef::Role",
+  "description": "openmeetings app",
+  "chef_type": "role",
+  "run_list" : [ "recipe[mysql]",
+                 "recipe[ant]",
+                 "recipe[openmeetings]" ]
+}

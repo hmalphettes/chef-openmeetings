@@ -1,0 +1,10 @@
+{
+  "name": "openmeetings-mysql-server",
+  "default_attributes": {},
+  "override_attributes": {},
+  "json_class": "Chef::Role",
+  "description": "openmeetings mysql server",
+  "chef_type": "role",
+  "run_list" : [ "recipe[mysql::server]",
+                 "recipe[openmeetings-mysql]" ]
+}
